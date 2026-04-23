@@ -1,36 +1,22 @@
 <?php
-global $pdo;
-$login = trim(filter_var( $_POST['login'], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
-$password = trim(filter_var( $_POST['password'], FILTER_SANITIZE_FULL_SPECIAL_CHARS));
+session_start();
 
-if(strlen($login) < 2){
-    echo "Login error";
-    exit;
+// Статические логин/пароль (как требует задание)
+$STATIC_LOGIN = "admin";
+$STATIC_PASS = "12345";
+
+$login = trim($_POST['login'] ?? '');
+$password = trim($_POST['password'] ?? '');
+
+if ($login === $STATIC_LOGIN && $password === $STATIC_PASS) {
+    $_SESSION['user'] = $login;
+    $_SESSION['message'] = " Успешный вход!";
+    $_SESSION['msg_type'] = 'success';
+} else {
+    $_SESSION['message'] = " Неверный логин или пароль";
+    $_SESSION['msg_type'] = 'error';
 }
 
-if (strlen($password) < 2){
-    echo "Password error";
-    exit;
-}
-
-//Password
-$salt = '56s89_vdtgrgrdgdg[drgd';
-$password =md5($salt . $password);
-
-//БД
-
-require "db.php";
-
-//Auth user
-
-$sql = "SELECT * FROM users WHERE login = ? AND password = ?";
-$query = $pdo->prepare($sql);
-$query->execute([$login, $password]);
-
-if($query->rowCount() == 0)
-    echo "Login error";
-else{
-    setcookie("login", $login, time() + (86400 * 30), "/")  ;
-    header("Location: /user.php");}
-
-
+// Возврат на страницу авторизации
+header("Location: /auth.php");
+exit;
