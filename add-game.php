@@ -35,7 +35,7 @@ $features       = $_POST['features']       ??
 </head>
 <body>
 
-<h1>🎮 Добавить новую игру в каталог</h1>
+<h1> Добавить новую игру в каталог</h1>
 
 <form action="process-add-game.php" method="POST" enctype="multipart/form-data">
 
